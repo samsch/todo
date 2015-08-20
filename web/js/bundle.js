@@ -1374,12 +1374,12 @@ riot.mountTo = riot.mount
 
 var riot = require('riot');
 var todoTag = require('./riot-tags/to-do.tag');
-var basicListTag = require('./riot-tags/basic-list.tag');
-var basicAdderTag = require('./riot-tags/basic-adder.tag');
+require('./riot-tags/item-list.tag');
+require('./riot-tags/basic-adder.tag');
 
 riot.mount('*');
 
-},{"./riot-tags/basic-adder.tag":3,"./riot-tags/basic-list.tag":4,"./riot-tags/to-do.tag":5,"riot":1}],3:[function(require,module,exports){
+},{"./riot-tags/basic-adder.tag":3,"./riot-tags/item-list.tag":4,"./riot-tags/to-do.tag":5,"riot":1}],3:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('basic-adder', '<form onsubmit="{submit}" action="localhost:8080"> <input type="text" onkeyup="{changed}"> <button type="submit" __disabled="{!text}">Add</button> </form>', function(opts) {
     var input;
@@ -1400,18 +1400,32 @@ module.exports = riot.tag('basic-adder', '<form onsubmit="{submit}" action="loca
 
 },{"riot":1}],4:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('basic-list', '<h1>Todo list</h1> <ul> <li each="{ items }">{ title } : { date }</li> </ul>', function(opts) {
+module.exports = riot.tag('item-list', '<ul> <li each="{items}" class="{completed: date}"> <label><input type="checkbox" __checked="{date}" onchange="{parent.itemCompleted}"> {title}<small if="{date}"> {date}</small></label> <button type="button" onclick="{parent.itemDelete}">X</button> </li> </ul>', function(opts) {
     this.items = [{title:"Example"}];
     this.parent.on('newitem', (function(item) {
-        this.items.push({title: item});
+        this.items.push({title: item, date: null});
         this.update();
     }).bind(this));
+    this.itemDelete = function(ev) {
+        var item = ev.item;
+        var index = this.items.indexOf(item);
+        this.items.splice(index, 1);
+    }.bind(this);
+    this.itemCompleted = function(ev) {
+        var item = ev.item;
+        if(ev.target.checked) {
+            item.date = new Date();
+        }
+        else {
+            item.date = null;
+        }
+    }.bind(this);
 
 });
 
 },{"riot":1}],5:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('to-do', '<basic-list><h2>Things to do:</h2></basic-list> <basic-adder></basic-adder>', function(opts) {
+module.exports = riot.tag('to-do', '<h2>Things to do:</h2> <item-list></item-list> <basic-adder></basic-adder>', function(opts) {
     riot.observable(this);
 
 });

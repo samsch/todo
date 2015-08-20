@@ -1,0 +1,29 @@
+item-list {
+    display: block;
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+        display: block;
+        background-color: #ccc;
+        color: #333;
+        text-shadow: 2px 2px 4px black;
+        padding: .3em .5em;
+        display: flex;
+
+        label {
+            flex: 0 1 100%;
+        }
+        button {
+            flex: 0 0 auto;
+        }
+
+    }
+    .completed {
+        
+    }
+}

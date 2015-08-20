@@ -3,6 +3,10 @@ html {
     position: relative;
 }
 
+@import "riot-tags/to-do";
+@import "riot-tags/item-list";
+@import "riot-tags/basic-adder";
+
 p {
     margin: 0;
     + p {
